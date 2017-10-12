@@ -1,4 +1,4 @@
-show_figure_step = true;
+show_figure_step = false;
 threshold_num_pixels = 2000; %Avoid blobs smaller than this value
                              % Subject to change based on our experimental
                              % setup
@@ -107,7 +107,24 @@ for i = 48:1:48 %52
            figure
            imshow(im_segmented_plaque)
        end
-       
+    im_segmented_plaque_gray = rgb2gray(im_segmented_plaque);   
 %% TODO Use Histogram function instead by grouping grayscale values in a vector
-   %imhist(im_y)
+   segmented_plaque_1d = reshape(im_segmented_plaque_gray, [numel(im_segmented_plaque_gray),1]);
+   [~,~,v] = find(segmented_plaque_1d);
+   figure
+   histogram(v);
+%    thresh = graythresh(im_segmented_plaque_gray);
+%    im_bw = imbinarize(im_segmented_plaque_gray,thresh);
+%    figure
+%    imshow(im_bw)
+%% TODO get the hue and sat plane and look at the histogram plots for these
+im_h_pl = im_segmented_plaque(:,:,1);
+im_s_pl = im_segmented_plaque(:,:,2);
+
+figure
+imshow(im_segmented_plaque)
+figure
+imshow(im_h_pl)
+figure
+imshow(im_s_pl)
 end
