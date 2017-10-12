@@ -1,5 +1,9 @@
 show_figure_step = true;
-for i = 48:1:48
+threshold_num_pixels = 2000; %Avoid blobs smaller than this value
+                             % Subject to change based on our experimental
+                             % setup
+margin_pixels_cropping = 1;
+for i = 48:1:48 %52
     filename = strcat('dried_teeth_frontal\proc_',sprintf('%d',i),'.tiff');
     im = imread(filename);
     B = imsharpen(im);
@@ -53,7 +57,7 @@ for i = 48:1:48
     M_roi(sAll) = 1;
     %M(1:m,:) = M(1:m,:) + M_roi;
     if show_figure_step
-        figure,imshow(M_roi);
+        %figure,imshow(M_roi);
     end
     %% Morphological Cleaning on the ROI image
     M_roi_holes_filled = imfill(M_roi,'holes');
@@ -66,5 +70,44 @@ for i = 48:1:48
     if show_figure_step
         figure, imshow(BWfinal), title('segmented image');
     end
-    %%
+    %% Get rid of unwanted blobs
+    BWfinal = bwareaopen(BWfinal, threshold_num_pixels);
+%     label_w = bwlabel(BWfinal);
+%     stats_w = regionprops(logical(BWfinal), 'Area');
+%     areas = zeros(length(stats_w),1);
+%     for j = 1 : length(stats_w)
+%         areas(j) = stats_w(j).Area;
+%     end
+%     [~,ind] = min(areas);
+%     BWfinal(label_w == ind) = 0;
+    
+    if show_figure_step
+        figure
+        imshow(BWfinal)
+    end
+    [row, ~] = find(BWfinal);
+    row_min = min(row);
+    row_max = max(row);
+    
+    row_min = max(row_min-margin_pixels_cropping, 1);
+    row_max = min(row_max+margin_pixels_cropping,m);
+    
+    
+    im_only_interest_area = C;
+    im_only_interest_area(1:row_min,:) = 0;
+    im_only_interest_area(row_max:m,:) = 0;
+    im_r = im_only_interest_area(:,:,1);
+    im_g = im_only_interest_area(:,:,2);
+    im_b = im_only_interest_area(:,:,3);
+    im_r(BWfinal == 1) = 0;
+    im_g(BWfinal == 1) = 0;
+    im_b(BWfinal == 1) = 0;
+    im_segmented_plaque = cat(3,im_r,im_g, im_b);
+       if show_figure_step
+           figure
+           imshow(im_segmented_plaque)
+       end
+       
+%% TODO Use Histogram function instead by grouping grayscale values in a vector
+   %imhist(im_y)
 end
