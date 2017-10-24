@@ -1,8 +1,8 @@
-show_figure_step = false;
+show_figure_step = true;
 threshold_num_pixels = 2000; %Avoid blobs smaller than this value
                              % Subject to change based on our experimental
                              % setup
-margin_pixels_cropping = 1;
+margin_pixels_cropping = 0;
 for i = 48:1:48 %52
     filename = strcat('dried_teeth_frontal\proc_',sprintf('%d',i),'.tiff');
     im = imread(filename);
@@ -109,22 +109,59 @@ for i = 48:1:48 %52
        end
     im_segmented_plaque_gray = rgb2gray(im_segmented_plaque);   
 %% TODO Use Histogram function instead by grouping grayscale values in a vector
-   segmented_plaque_1d = reshape(im_segmented_plaque_gray, [numel(im_segmented_plaque_gray),1]);
-   [~,~,v] = find(segmented_plaque_1d);
-   figure
-   histogram(v);
-%    thresh = graythresh(im_segmented_plaque_gray);
-%    im_bw = imbinarize(im_segmented_plaque_gray,thresh);
+%    segmented_plaque_1d = reshape(im_segmented_plaque_gray, [numel(im_segmented_plaque_gray),1]);
+%    [~,~,v] = find(segmented_plaque_1d);
 %    figure
-%    imshow(im_bw)
-%% TODO get the hue and sat plane and look at the histogram plots for these
-im_h_pl = im_segmented_plaque(:,:,1);
-im_s_pl = im_segmented_plaque(:,:,2);
+%    histogram(v);
+%% Get only cropped area
+im_cropped_image_r = zeros(row_max-row_min + 1,n,'uint8');
+im_cropped_image_g = zeros(row_max-row_min + 1,n,'uint8');
+im_cropped_image_b = zeros(row_max-row_min + 1,n,'uint8');
+im_cropped_image = cat(3, im_cropped_image_r, im_cropped_image_g, im_cropped_image_b);
+im_cropped_image(:,:,1) = im_only_interest_area(row_min:row_max,:,1);
+im_cropped_image(:,:,2) = im_only_interest_area(row_min:row_max,:,2);
+im_cropped_image(:,:,3) = im_only_interest_area(row_min:row_max,:,3);
 
+im_cropped_bw_final = zeros(row_max-row_min + 1,n,'logical');
+im_cropped_bw_final(:) = BWfinal(row_min:row_max,:);
+
+if (show_figure_step)
+    figure
+    imshow(im_cropped_bw_final)
+    title('Narrow Window')
+end
+
+im_cropped_bw_gum_and_plaque = ~im_cropped_bw_final;
 figure
-imshow(im_segmented_plaque)
+imshow(im_cropped_bw_gum_and_plaque)
+title('Gum and Plaque')
+im_cropped_image_gray = rgb2gray(im_cropped_image);
 figure
-imshow(im_h_pl)
+imshow(im_cropped_image_gray)
+%% Hue and saturation
+im_h_pl = contrast_adjusted(:,:,1);
+im_s_pl = contrast_adjusted(:,:,2);
 figure
-imshow(im_s_pl)
+imshow(contrast_adjusted);
+% figure
+% imshow(im_segmented_plaque)
+% figure
+% imshow(im_cropped_image)
+% figure
+% imshow(im_contrast)
+% figure
+% imshow(im_h_pl)
+% figure
+% imshow(im_s_pl)
+%% Thicken the edges of the teeth
+% [~, threshold] = edge(BWfinal, 'sobel');
+% fudgeFactor = 1;
+% im_edge = edge(BWfinal,'sobel', threshold * fudgeFactor);
+% figure, imshow(im_edge), title('binary gradient mask');
+% se90 = strel('line', 5, 90);
+% se0 = strel('line', 5, 0);
+% %BWsdil = imdilate(im_edge, [se45 se0]);
+% BWdilate = imdilate(im_edge, [se0]);
+% figure
+% imshow(BWdilate)
 end
