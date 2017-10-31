@@ -146,6 +146,17 @@ for k = 1:sz_2
     plot(selected_cols_lower{k},selected_rows_lower{k}, 'go');
 end
 hold off
+%%
+imshow(C)
+hold on
+for k = 1 : sz_1
+    plot(selected_cols_upper{k},selected_rows_upper{k}, 'ro');
+end
+
+for k = 1:sz_2
+    plot(selected_cols_lower{k},selected_rows_lower{k}, 'bo');
+end
+hold off
 end
 
 %%
