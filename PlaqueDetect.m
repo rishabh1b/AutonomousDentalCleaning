@@ -1,16 +1,14 @@
-for i = 48:1:85
+for i = 48:1:65
     filename = strcat('proc_',sprintf('%d',i),'.tiff');
+    tic
     im = imread(filename);
     B = imsharpen(im);
     C = imadjust(B, stretchlim(B));
-    %imtool(C)
     im_hsv = rgb2hsv(C);
     im_h = im_hsv(:,:,1);
     im_s = im_hsv(:,:,2);
     im_v = im_hsv(:,:,3);
     [m,n] = size(im_h);
-%     figure,
-%     imshow(C);
     %% Thresholding in HSV space
     im_b = im_h > 0.8 & im_s > 0.2;
     im_b_2 = imfill(im_b, 'holes');
@@ -44,20 +42,66 @@ for i = 48:1:85
     M_roi = zeros(m,n);
     M_roi(sAll) = 1;
     M(1:m,:) = M(1:m,:) + M_roi;
-    figure,imshow(M);
     r=C(:,:,1);
     g=C(:,:,2);
     b=C(:,:,3);
-    struct1=strel('line',1,30);
-    im_b= r>215 & g>150 & b<180;
+    %% Detections
+    r1=215;g1=150;b1=180;
+    flag=0;
+    while(flag==0)
+    im_b= r>r1 & g>g1 & b<b1;
     im_b=imfill(im_b,'holes');
-    %im_b=imopen(im_b,struct1);
-%     figure
-%     imshow(im_b);
-    figure(1)
+    figure(1),
     subplot(1,2,1)
-    imshow(im)
+    imshow(im);
     subplot(1,2,2)
-    imshow(im_b)
-    hgexport(gcf, fullfile('plaqueoutput',filename), hgexport('factorystyle'), 'Format', 'jpeg');
+    imshow(im_b);
+    choice = questdlg('Satisfied with the detections?','Choose', ...
+        'Yes','No','Default');
+    cla
+    % Handle response
+    switch choice
+        case 'Yes'
+            disp([' Chosen yes'])
+            r1=215;g1=150;b1=180;
+            flag=1;
+        case 'No'
+            cla
+            figure(2),
+            M=imcrop(im);
+            temp=mean(mean(M));
+            r1=temp(1,1,1);
+            b1=temp(1,1,2);
+            g1=temp(1,1,3);
+    end
+    end
+    cla
+    %% Scoring
+    struct1=strel('line',1,30);
+    im_b1= r>r1 & g>g1 & b<b1;
+    im_b1=imfill(im_b1,'holes');
+    im_b2= r>r1 & g>g1 & b<b1-20;
+    im_b2=imfill(im_b2,'holes');
+    im_b3= r>r1 & g>g1 & b<b1-40;
+    im_b3=imfill(im_b3,'holes');
+    score=zeros(size(im_b1));
+    score=im_b1+im_b2+im_b3;
+    [redr,redc]=(find(score==3));
+    [or,oc]=(find(score==2));
+    [yr,yc]=(find(score==1));
+    figure(3),
+    subplot(1,2,1)
+    imshow(im);
+    subplot(1,2,2)
+    imshow(im);
+    hold on
+    scatter(yc,yr,'y','filled');
+    hold on
+    scatter(oc,or,'MarkerFaceColor',[ 0.9100 0.4100 0.1700],'MarkerEdgeColor',[ 0.9100 0.4100 0.1700]);
+    hold on
+    scatter(redc,redr,'r','filled');
+    hold on
+    hgexport(gcf, fullfile('plaquescore',filename), hgexport('factorystyle'), 'Format', 'jpeg');
+    pause(2)
+    cla
 end
