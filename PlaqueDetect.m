@@ -1,5 +1,5 @@
-for i = 48:1:65
-    filename = strcat('proc_',sprintf('%d',i),'.tiff');
+for i = 48:1:48
+    filename = strcat('dried_teeth_frontal\proc_',sprintf('%d',i),'.tiff');
     tic
     im = imread(filename);
     B = imsharpen(im);
@@ -18,13 +18,17 @@ for i = 48:1:65
     im_b_4 = imfill(im_b_3, 'holes');
     im_b_5 = imopen(im_b_4, struct);
     %         imshow(im_b_5);
-    for i =1:m
+    for k =1:m
         for j=1:n
-            if (im_b_5(i,j)==1)
-                C(i,j)=1;
+            if (im_b_5(k,j)==1)
+                C(k,j)=1;
             end
         end
     end
+    figure
+    imshow(C)
+    title('First Image')
+    
     D=rgb2gray(C);
     delta = 8;
     maxarea = 0.5;
@@ -80,28 +84,40 @@ for i = 48:1:65
     struct1=strel('line',1,30);
     im_b1= r>r1 & g>g1 & b<b1;
     im_b1=imfill(im_b1,'holes');
+    figure
+    imshow(im_b1)
+    title('First Score')
     im_b2= r>r1 & g>g1 & b<b1-20;
     im_b2=imfill(im_b2,'holes');
+    figure
+    imshow(im_b2)
+    title('Second Score')
     im_b3= r>r1 & g>g1 & b<b1-40;
     im_b3=imfill(im_b3,'holes');
-    score=zeros(size(im_b1));
+    figure
+    imshow(im_b3)
+    title('Third Score')
+    %score=zeros(size(im_b1));
     score=im_b1+im_b2+im_b3;
+    figure
+    imshow(score)
+    title('score')
     [redr,redc]=(find(score==3));
     [or,oc]=(find(score==2));
     [yr,yc]=(find(score==1));
-    figure(3),
+    figure
     subplot(1,2,1)
     imshow(im);
     subplot(1,2,2)
     imshow(im);
     hold on
-    scatter(yc,yr,'y','filled');
+    plot(yc,yr,'yo');
     hold on
-    scatter(oc,or,'MarkerFaceColor',[ 0.9100 0.4100 0.1700],'MarkerEdgeColor',[ 0.9100 0.4100 0.1700]);
+    plot(oc,or,'gx')%'MarkerFaceColor',[ 0.9100 0.4100 0.1700],'MarkerEdgeColor',[ 0.9100 0.4100 0.1700]);
     hold on
-    scatter(redc,redr,'r','filled');
+    scatter(redc,redr,'r+')%'filled');
     hold on
-    hgexport(gcf, fullfile('plaquescore',filename), hgexport('factorystyle'), 'Format', 'jpeg');
+    %hgexport(gcf, fullfile('plaquescore',filename), hgexport('factorystyle'), 'Format', 'jpeg');
     pause(2)
-    cla
+    %cla
 end
