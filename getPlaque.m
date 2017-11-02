@@ -1,3 +1,4 @@
+%% Get the tooth profile
 show_figure_step = false;
 threshold_num_pixels = 2000; %Avoid blobs smaller than this value
                              % Subject to change based on our experimental
@@ -5,7 +6,7 @@ threshold_num_pixels = 2000; %Avoid blobs smaller than this value
 margin_pixels_cropping = 0;
 resolution = 30;
 base_path = 'mseroutputs\img';
-for i = 50:1:50 %52
+for i = 52:1:52 %52
     filename = strcat('dried_teeth_frontal\proc_',sprintf('%d',i),'.tiff');
     im = imread(filename);
     B = imsharpen(im);
