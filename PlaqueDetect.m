@@ -119,5 +119,74 @@ for i = 48:1:48
     hold on
     %hgexport(gcf, fullfile('plaquescore',filename), hgexport('factorystyle'), 'Format', 'jpeg');
     pause(2)
+    %% Process the score matrix to find maximal scores in a circular region around these values
+    combined_scoring = score;
+    keep_track = score;
+    keep_track(:) =0;
+    [m,n] = size(score);
+    [xgrid, ygrid] = meshgrid(1:n, 1:m);
+    
+    rad = 10;
+   str = strcat('Combined Score within a radius of', ' ', sprintf('%d',rad), ' pixels');
+    step_size_x = 10;
+    step_size_y = 10;
+    [row, col] = find(score > 0);
+    min_row = min(row);
+    max_row = max(row);
+    %centre_pixel_x = 1:step_size_x:n;
+    %centre_pixel_y = min_row+rad:step_size_y:max_row-rad;
+    for x = 1:step_size_x:n
+        for y = min_row+rad:step_size_y:max_row-rad
+            mask = ((xgrid-x).^2 + (ygrid-y).^2) <= rad.^2;
+            vals = score(mask > 0);
+            if any(vals) > 0
+                yellow_score = numel(find(vals == 1));
+                green_score = numel(find(vals == 2));
+                red_score = numel(find(vals == 3));
+                ind = score > 0 & mask > 0 & keep_track == 0;
+                if yellow_score > green_score && yellow_score > red_score
+                    combined_scoring(ind) = 1;
+                    keep_track(ind) = 1;
+                elseif green_score > yellow_score && green_score > red_score                 
+                    combined_scoring(ind) = 2;
+                    keep_track(ind) = 1;
+                elseif red_score > yellow_score && red_score > green_score
+                    combined_scoring(ind) = 3;
+                    keep_track(ind) = 1;
+                end        
+            end
+        end
+    end
+    
+    [redr2,redc2]=(find(combined_scoring==3));
+    [or2,oc2]=(find(combined_scoring==2));
+    [yr2,yc2]=(find(combined_scoring==1));
+    figure
+    subplot(2,2,1)
+    imshow(im);
+    title('Original Image')
+%     hold on
+%     plot(yc,yr,'yo');
+%     hold on
+%     plot(oc,or,'gx')%'MarkerFaceColor',[ 0.9100 0.4100 0.1700],'MarkerEdgeColor',[ 0.9100 0.4100 0.1700]);
+%     hold on
+%     scatter(redc,redr,'r+')%'filled');
+%     hold on
+    subplot(2,2,2)
+    imshow(im);
+    title('Score = 1 Area')
+    hold on
+    plot(yc2,yr2,'yo');
+    subplot(2,2,3)
+    imshow(im);
+    title('Score = 2 Area')
+    hold on
+    plot(oc2,or2,'gx')%'MarkerFaceColor',[ 0.9100 0.4100 0.1700],'MarkerEdgeColor',[ 0.9100 0.4100 0.1700]);
+    subplot(2,2,4)
+    imshow(im);
+    title('Score = 3 Area')
+    hold on
+    scatter(redc2,redr2,'r+')%'filled');
+    hold on       
     %cla
 end
