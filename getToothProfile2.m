@@ -6,11 +6,12 @@ threshold_num_pixels = 2000; %Avoid blobs smaller than this value
 margin_pixels_cropping = 0;
 resolution = 30;
 base_path = 'mseroutputs\img';
-for i = 50:1:50 %52
+for i = 49:1:49 %52
     filename = strcat('dried_teeth_frontal\proc_',sprintf('%d',i),'.tiff');
     im = imread(filename);
     B = imsharpen(im);
-    C = imadjust(B, stretchlim(B));
+    %C = imadjust(B, stretchlim(B));
+    C = B;
     im_hsv = rgb2hsv(C);
     %imtool(C)
     if show_figure_step
@@ -92,7 +93,7 @@ for i = 50:1:50 %52
         end
     end
     %% Apply the Rectangular window
-    %BWfinal(min_row_window:max_row_window,:) = 0;
+    BWfinal(min_row_window:max_row_window,:) = 0;
     figure
     imshow(BWfinal)
     title('Window Applied')
@@ -131,10 +132,14 @@ for k = 1:length(lines)
       xy_long = xy;
    end
    index = index + 2;
+   bw_2(floor(xy(1,2))-10 : ceil(xy(2,2))+10, floor(xy(1,1)) : ceil(xy(2,1))) = 0;
 end
+figure
+imshow(bw_2)
+title('Horizontal Pixels Removed')
 %% Get the median of the y points
 y_med = round(median(y_coords));
-bw_2(min_row_window:max_row_window,:) = 0;
+%bw_2(min_row_window:max_row_window,:) = 0;
 % bw_2(y_med-40:y_med+40,:) = 0;
 % imshow(bw_2)
 %% Get the points on the tooth profile
@@ -216,4 +221,7 @@ for k = 1:sz_2
     plot(selected_cols_lower{k},selected_rows_lower{k}, 'bo');
 end
 hold off
+%% Peter corke trial
+% [label,n] = imser(D, 'light');
+% idisp(label)
 end
