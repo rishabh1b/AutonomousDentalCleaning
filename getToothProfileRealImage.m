@@ -1,5 +1,5 @@
 %% Get the tooth profile
-show_figure_step = true;
+show_figure_step = false;
 threshold_num_pixels = 2000; %Avoid blobs smaller than this value
                              % Subject to change based on our experimental
                              % setup
@@ -7,7 +7,8 @@ margin_pixels_cropping = 0;
 resolution = 30;
 base_path = 'mseroutputs\img';
 for i = 49:1:49 %52
-    filename = strcat('dried_teeth_frontal\proc_',sprintf('%d',i),'.tiff');
+    %filename = strcat('dried_teeth_frontal\proc_',sprintf('%d',i),'.tiff');
+    filename = 'testcropped.jpg';
     im = imread(filename);
     B = imsharpen(im);
     %C = imadjust(B, stretchlim(B));
@@ -231,148 +232,38 @@ selected_cols_lower_sorted = cell(sz_2,1);
 selected_rows_lower_sorted = cell(sz_2,1);
 
 % Sort the First element in each column of upper teeth
-first_elems_cols = zeros(sz_1,1);
-for k = 1 : sz_1
-    first_elems_cols(k) = selected_cols_upper{k}(1);
-end
-[~, ind] = sort(first_elems_cols);
-for k = 1 : sz_1
-    curr_cols = selected_cols_upper{ind(k)};
-    curr_rows = selected_rows_upper{ind(k)};
-    [sorted_cols,ind2] = sort(curr_cols);
-    selected_cols_upper_sorted{k} = sorted_cols;
-    selected_rows_upper_sorted{k} = curr_rows(ind2);
-end
-
-% Sort the First column in each column of lower teeth
-for k = 1 : sz_2
-    first_elems_cols(k) = selected_cols_lower{k}(1);
-end
-[~, ind] = sort(first_elems_cols);
-for k = 1 : sz_2
-    curr_cols = selected_cols_lower{ind(k)};
-    curr_rows = selected_rows_lower{ind(k)};
-    [sorted_cols,ind2] = sort(curr_cols);
-    selected_cols_lower_sorted{k} = sorted_cols;
-    selected_rows_lower_sorted{k} = curr_rows(ind2);
-end
-
-%% Clean the Sorted Rows and Columns to get nice ascending points
-
-
-selected_cols_upper_sorted_cleaned = cell(sz_1,1);
-selected_rows_upper_sorted_cleaned = cell(sz_1,1);
-selected_cols_lower_sorted_cleaned = cell(sz_2,1);
-selected_rows_lower_sorted_cleaned = cell(sz_2,1);
-
-min_last_tooth = 0;
-max_last_tooth = 0;
-% First clean the upper teeth
-for k = 1:sz_1
-    rows = selected_rows_upper_sorted{k};
-    cols = selected_cols_upper_sorted{k};
-    if cols(1) > min_last_tooth && cols(1) < max_last_tooth
-        continue;
-    end
-    curr_sz = size(rows,2);
-    cleaned_rows = rows(1);
-    cleaned_cols = cols(1);
-    last_added_row_elem = rows(1);
-    [~, ind] = min(rows);
-    for j = 1 : ind-1
-        if rows(j+1) > last_added_row_elem || abs(rows(j+1) - last_added_row_elem) > 80
-            continue;
-        else
-            cleaned_rows = [cleaned_rows rows(j+1)];
-            cleaned_cols = [cleaned_cols cols(j+1)];
-            last_added_row_elem = rows(j+1);
-        end
-    end
-    cleaned_rows = [cleaned_rows rows(ind)];
-    cleaned_cols = [cleaned_cols cols(ind)];
-    last_added_row_elem = rows(ind);
-    for j = ind : curr_sz - 1
-        if rows(j+1) < last_added_row_elem || abs(rows(j+1) - last_added_row_elem) > 80
-            continue;
-        else
-            cleaned_rows = [cleaned_rows rows(j+1)];
-            cleaned_cols = [cleaned_cols cols(j+1)];
-            last_added_row_elem = rows(j+1);
-        end
-    end
-selected_cols_upper_sorted_cleaned{k} = cleaned_cols;
-selected_rows_upper_sorted_cleaned{k} = cleaned_rows;
-min_last_tooth = min(cleaned_cols);
-max_last_tooth = max(cleaned_cols);
-end
-
-min_last_tooth = 0;
-max_last_tooth = 0;
-
-% Then clean the lower teeth
-for k = 1:sz_2
-    rows = selected_rows_lower_sorted{k};
-    cols = selected_cols_lower_sorted{k};
-    if cols(1) > min_last_tooth && cols(1) < max_last_tooth
-        continue;
-    end
-    curr_sz = size(rows,2);
-    cleaned_rows = rows(1);
-    cleaned_cols = cols(1);
-    last_added_row_elem = rows(1);
-    [~, ind] = sort(rows, 'descend');
-    if numel(ind) > 1
-        ind = ind(2);
-    end
-
-    for j = 1 : ind-1
-        if rows(j+1) < last_added_row_elem || abs(rows(j+1) - last_added_row_elem) > 200
-            continue;
-        else
-            cleaned_rows = [cleaned_rows rows(j+1)];
-            cleaned_cols = [cleaned_cols cols(j+1)];
-            last_added_row_elem = rows(j+1);
-        end
-    end
-    cleaned_rows = [cleaned_rows rows(ind)];
-    cleaned_cols = [cleaned_cols cols(ind)];
-    last_added_row_elem = rows(ind);
-    for j = ind : curr_sz - 1
-        if rows(j+1) > last_added_row_elem || abs(rows(j+1) - last_added_row_elem) > 100
-            continue;
-        else
-            cleaned_rows = [cleaned_rows rows(j+1)];
-            cleaned_cols = [cleaned_cols cols(j+1)];
-            last_added_row_elem = rows(j+1);
-        end
-    end
-selected_cols_lower_sorted_cleaned{k} = cleaned_cols;
-selected_rows_lower_sorted_cleaned{k} = cleaned_rows;
-min_last_tooth = min(cleaned_cols);
-max_last_tooth = max(cleaned_cols);
-end
-
+% first_elems_cols = zeros(sz_1,1);
+% for k = 1 : sz_1
+%     first_elems_cols(k) = selected_cols_upper{k}(1);
+% end
+% [~, ind] = sort(first_elems_cols);
+% selected_cols_upper_sorted{1:sz_1} = selected_cols_upper{ind};
+% selected_rows_upper_sorted{1:sz_1} = selected_rows_upper{ind};
+% 
+% % Sort the First column in each column of lower teeth
+% for k = 1 : sz_2
+%     first_elems_cols(k) = selected_cols_lower{k}(1);
+% end
+% [~, ind] = sort(first_elems_cols);
+% selected_cols_lower_sorted{1:sz_2} = selected_cols_lower{ind};
+% selected_rows_lower_sorted{1:sz_2} = selected_rows_upper{ind};
 
 figure
 imshow(C)
 hold on
 % Plot the points
 for k = 1 : sz_1
-    temp_sz = size(selected_cols_upper_sorted_cleaned{k},2);
+    temp_sz = size(selected_cols_upper{k},2);
     for t = 1 : temp_sz
-        plot(selected_cols_upper_sorted_cleaned{k}(t),selected_rows_upper_sorted_cleaned{k}(t), 'ro');
-        pause(0.2)
+        plot(selected_cols_upper{k}(t),selected_rows_upper{k}(t), 'ro');
+        pause(1)
     end
 end
 
 for k = 1 : sz_2
-    temp_sz = size(selected_cols_lower_sorted_cleaned{k},2);
-    for t = 1 : temp_sz
-        plot(selected_cols_lower_sorted_cleaned{k}(t),selected_rows_lower_sorted_cleaned{k}(t), 'go');
-        pause(0.2)
-    end
+    plot(selected_cols_lower{k},selected_rows_lower{k}, 'go');
+    pause(1)
 end
-
 
 % for k = 1 : sz_1
 %     plot(selected_cols_upper_sorted{k},selected_rows_upper_sorted{k}, 'ro');
