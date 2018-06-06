@@ -4,10 +4,15 @@ This project is a part of independent study taken towards completion of Masters 
 # Running a Demo
 
 #### On DataSet Images
+<p align="center">
+  <img src="https://github.com/rishabh1b/AutonomousDentalCleaning/blob/master/coverageImages/48.jpg" alt="Example Real World Setting"/>
+</p>
 1. Execute the script ```PlaqueDetect.m```. The algorithm will run and generate a coverage map and also show a proposed cleaning time. It is set to run on a single image. But ```i``` on line 4 can be made to iterate on the images in the dataset. ```i``` goes from 45 to 90.
 
 #### On Real life image
-![alt text](base_image.png "Example Real World Setting Image")
+<p align="center">
+  <img src="https://github.com/rishabh1b/AutonomousDentalCleaning/blob/master/base_image.png?raw=true" alt="Example Real World Setting"/>
+</p>
 
 The code in MATLAB is written to generate the gumline points offline and then these points can be dumped to a .txt file which can be read by a ROS node to command the KUKA iiwa manipulator to trace these points, after conversion through homography calculation. From MATLAB perspective, following steps should be followed to get the teeth points on the gumline. 
 
