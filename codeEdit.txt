@@ -1,3 +1,0 @@
-// Line Number 74
-if (i == 1)
-  point.positions[i] = -point.positions[i];
