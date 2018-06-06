@@ -98,5 +98,5 @@ imshow(imcropped)
 % imshow(imcrop_2)
 %%
 % Call RealTeethGetGumlinePoints2.m after this
-RealTeethGetGumlinePoints2
+getGumLinePoints;
 %RealTeethGetGumlinePoints3
