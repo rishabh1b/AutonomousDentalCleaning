@@ -7,7 +7,8 @@ This project is a part of independent study taken towards completion of Masters 
 <p align="center">
   <img src="https://github.com/rishabh1b/AutonomousDentalCleaning/blob/master/coverageImages/48.jpg" alt="Example Real World Setting"/>
 </p>
-1. Execute the script ```PlaqueDetect.m```. The algorithm will run and generate a coverage map and also show a proposed cleaning time. It is set to run on a single image. But ```i``` on line 4 can be made to iterate on the images in the dataset. ```i``` goes from 45 to 90.
+
+Execute the script ```PlaqueDetect.m```. The algorithm will run and generate a coverage map and also show a proposed cleaning time. It is set to run on a single image. But ```i``` on line 4 can be made to iterate on the images in the dataset. ```i``` goes from 45 to 90.
 
 #### On Real life image
 <p align="center">
