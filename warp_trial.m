@@ -1,17 +1,28 @@
+% im = imread('trial_2.png');
+% im=imcrop(im);
+% t = @(x) x(:,1).*-pi/10;
+% f = @(x) [x(:,1).*cos(t(x))+x(:,2).*sin(t(x)),-x(:,1).*sin(t(x))+x(:,2).*cos(t(x))];
+% g = @(x, unused) f(x);
+% tform = maketform('custom', 2, 2, [], g, []);
+% IM = imtransform(im, tform, 'UData', [-1 1], 'VData', [-1 1], ...
+%    'XData', [-1 1], 'YData', [-1 1]);
+% figure(2),
+% imshow(IM)
+%%
 %% Read the Imge
 %im = imread('trial_2.png');
 %im = imread('image2.JPG');
 %im = imread('newSetupImages/setup_3.jpg');
 %im = imread('image_raw_screenshot_09.02.2018.png');
-im = imread('base_image.png');
-im_gray = rgb2gray(im);
+%im_gray = rgb2gray(im);
 
-%im_gray = imread('newsetup_2.png');
-%im = im_gray;
+im_gray = imread('newsetup_2.png');
+im = im_gray;
+figure
 imshow(im_gray);
 %% Resize to be consistent with the cv_bridge images
 %im_gray = imresize(im_gray,[964,1296]);
-imtool(im_gray)
+%imtool(im_gray)
 %% Put the corner points of transparent acrylic sheet as seen in the image
 % square_clock = [202, 314;...
 %                 606, 297;...
@@ -55,16 +66,10 @@ imtool(im_gray)
 %                 1109, 807;...
 %                 161, 815];
 % New Setup          
-% square_clock = [189, 335;...
-%                 867, 268;...
-%                 945, 841;...
-%                 145, 907];
-% New Setup Image from Windows
-square_clock = [192, 333;...
-                850, 265;...
-                931, 831;...
-                142, 903];
-            
+square_clock = [189, 335;...
+                867, 268;...
+                945, 841;...
+                145, 907];
 %warp_image_sz = 510;
 warp_image_sz = 310;
 front_facing_marker = [10 10; warp_image_sz 10; warp_image_sz warp_image_sz; 10 warp_image_sz];
@@ -86,10 +91,18 @@ ind_rect_image = sub2ind([warp_image_sz+margin_size,warp_image_sz+margin_size],w
 ind_vid_image = sub2ind(image_size, interior_pts(:,2), interior_pts(:,1));
 
 rect_image(ind_rect_image) = curr_image(ind_vid_image);
-
+figure
 imshow(rect_image);
 %% Get the cropped version
 [imcropped, rect] = imcrop(rect_image);
+t = @(x) x(:,1).*-pi/10;
+f = @(x) [x(:,1).*cos(t(x))+x(:,2).*sin(t(x)),-x(:,1).*sin(t(x))+x(:,2).*cos(t(x))];
+g = @(x, unused) f(x);
+tform = maketform('custom', 2, 2, [], g, []);
+imcropped = imtransform(imcropped, tform, 'UData', [-1 1], 'VData', [-1 1], ...
+   'XData', [-1 1], 'YData', [-1 1]);
+% figure(2),
+%imshow(IM)
 %%
 figure
 imshow(imcropped)

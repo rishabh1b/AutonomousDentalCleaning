@@ -1,12 +1,13 @@
 %% Get the tooth profile
-show_figure_step = false;
+show_figure_step = true;
 threshold_num_pixels = 2000; %Avoid blobs smaller than this value
                              % Subject to change based on our experimental
                              % setup
 margin_pixels_cropping = 0;
-resolution = 30;
+resolution = 5;
 base_path = 'mseroutputs\img';
-for i = 49:1:49 %52
+global count;
+for i = count:1:count %52
     filename = strcat('dried_teeth_frontal\proc_',sprintf('%d',i),'.tiff');
     im = imread(filename);
     B = imsharpen(im);
@@ -57,15 +58,19 @@ for i = 49:1:49 %52
 %     figure
 %     imshow(M_roi)
     M_roi_holes_filled = imfill(M_roi,'holes');
-    figure
-    imshow(M_roi_holes_filled)
+    if show_figure_step
+        figure
+        imshow(M_roi_holes_filled)
+    end
     seD = strel('disk',1);
     BWfinal = imerode(M_roi_holes_filled,seD);
     BWfinal = imerode(BWfinal,seD);
     BWfinal = bwareaopen(BWfinal,1000);
-    figure
-    imshow(BWfinal)
-    hold on
+    if show_figure_step
+        figure
+        imshow(BWfinal)
+        hold on
+    end
     %% Get the Rectangular window
     labels = bwlabel(BWfinal);
     stats = regionprops(BWfinal, 'Centroid', 'BoundingBox');
@@ -93,10 +98,13 @@ for i = 49:1:49 %52
         end
     end
     %% Apply the Rectangular window
-    BWfinal(min_row_window:max_row_window,:) = 0;
-    figure
-    imshow(BWfinal)
-    title('Window Applied')
+    % Hack
+    BWfinal(min_row_window-20:max_row_window+20,:) = 0;
+    if show_figure_step
+        figure
+        imshow(BWfinal)
+        title('Window Applied')
+    end
     %%
       im_s = im_hsv(:,:,2);
       im_h = im_hsv(:,:,1);
@@ -113,7 +121,7 @@ for i = 49:1:49 %52
     [H,T,R] = hough(bw_2,'Theta',-90:0.5:-70);
     P  = houghpeaks(H,45,'threshold',ceil(0.3*max(H(:))));
     lines = houghlines(bw_2,T,R,P,'FillGap',20,'MinLength',25);
-    figure, imshow(bw_2), hold on
+    figure(2), imshow(bw_2), hold on
 max_len = 0;
 y_coords = zeros(length(lines) * 2,1);
 index = 1;
@@ -134,11 +142,14 @@ for k = 1:length(lines)
    index = index + 2;
    bw_2(floor(xy(1,2))-10 : ceil(xy(2,2))+10, floor(xy(1,1)) : ceil(xy(2,1))) = 0;
 end
-figure
-imshow(bw_2)
-title('Horizontal Pixels Removed')
+if show_figure_step
+    figure
+    imshow(bw_2)
+    title('Horizontal Pixels Removed')
+end
 %% Get the median of the y points
-y_med = round(median(y_coords));
+%y_med = round(median(y_coords));
+y_med = m/2;
 %bw_2(min_row_window:max_row_window,:) = 0;
 % bw_2(y_med-40:y_med+40,:) = 0;
 % imshow(bw_2)
@@ -160,10 +171,12 @@ for k = 1:length(stats)
         lowerTeethLabels = [lowerTeethLabels;k];
     end
 end
-figure
-imshow(bw_upper)
-figure
-imshow(bw_lower)
+if show_figure_step
+    figure
+    imshow(bw_upper)
+    figure
+    imshow(bw_lower)
+end
 %% Get hold of points at a resolution on teeth and plot
 sz_1 = numel(upperTeethLabels);
 selected_cols_upper = cell(sz_1,1);
@@ -198,29 +211,31 @@ for k = 1:sz_2
     selected_rows_lower{k} = rwS_T(1 : resolution: numPoints);
 end
 %% Plot
-figure
-imshow(bw_2)
-hold on
-for k = 1 : sz_1
-    plot(selected_cols_upper{k},selected_rows_upper{k}, 'ro');
-end
+if show_figure_step
+    figure
+    imshow(bw_2)
+    hold on
+    for k = 1 : sz_1
+        plot(selected_cols_upper{k},selected_rows_upper{k}, 'ro');
+    end
 
-for k = 1:sz_2
-    plot(selected_cols_lower{k},selected_rows_lower{k}, 'go');
-end
-hold off
-%%
-figure
-imshow(C)
-hold on
-for k = 1 : sz_1
-    plot(selected_cols_upper{k},selected_rows_upper{k}, 'ro');
-end
+    for k = 1:sz_2
+        plot(selected_cols_lower{k},selected_rows_lower{k}, 'go');
+    end
+    hold off
 
-for k = 1:sz_2
-    plot(selected_cols_lower{k},selected_rows_lower{k}, 'bo');
+    figure
+    imshow(C)
+    hold on
+    for k = 1 : sz_1
+        plot(selected_cols_upper{k},selected_rows_upper{k}, 'ro');
+    end
+
+    for k = 1:sz_2
+        plot(selected_cols_lower{k},selected_rows_lower{k}, 'ro');
+    end
+    hold off
 end
-hold off
 %% Peter corke trial
 % [label,n] = imser(D, 'light');
 % idisp(label)
@@ -245,6 +260,7 @@ for k = 1 : sz_1
 end
 
 % Sort the First column in each column of lower teeth
+first_elems_cols = zeros(sz_2,1);
 for k = 1 : sz_2
     first_elems_cols(k) = selected_cols_lower{k}(1);
 end
@@ -353,7 +369,7 @@ max_last_tooth = max(cleaned_cols);
 end
 
 
-figure
+figure(3)
 imshow(C)
 hold on
 % Plot the points
@@ -361,26 +377,30 @@ for k = 1 : sz_1
     temp_sz = size(selected_cols_upper_sorted_cleaned{k},2);
     for t = 1 : temp_sz
         plot(selected_cols_upper_sorted_cleaned{k}(t),selected_rows_upper_sorted_cleaned{k}(t), 'ro');
-        pause(0.2)
+        %pause(0.2)
     end
 end
 
 for k = 1 : sz_2
     temp_sz = size(selected_cols_lower_sorted_cleaned{k},2);
     for t = 1 : temp_sz
-        plot(selected_cols_lower_sorted_cleaned{k}(t),selected_rows_lower_sorted_cleaned{k}(t), 'go');
-        pause(0.2)
+        plot(selected_cols_lower_sorted_cleaned{k}(t),selected_rows_lower_sorted_cleaned{k}(t), 'ro');
+        %pause(0.2)
     end
 end
 
 
 % for k = 1 : sz_1
 %     plot(selected_cols_upper_sorted{k},selected_rows_upper_sorted{k}, 'ro');
-%     pause(0.001)
-% end
-% 
-% for k = 1 : sz_2
-%     plot(selected_cols_lower_sorted{k},selected_rows_lower_sorted{k}, 'ro');
-%     pause(0.001)
-% end
+%% Get All the points for laser coverage
+gumLinePointsUpper = [];
+gumLinepointsLower = [];
+for k = 1 : sz_1
+   %gumLinePointsUpper = [gumLinePointsUpper;[selected_cols_upper_sorted_cleaned{k}(:),selected_rows_upper_sorted_cleaned{k}(:)]];
+   gumLinePointsUpper = [gumLinePointsUpper;[selected_cols_upper{k}(:),selected_rows_upper{k}(:)]];
+end
+for k = 1 : sz_2
+   %gumLinepointsLower = [gumLinepointsLower;[selected_cols_lower_sorted_cleaned{k}(:),selected_rows_lower_sorted_cleaned{k}(:)]];
+   gumLinepointsLower = [gumLinepointsLower;[selected_cols_lower{k}(:),selected_rows_lower{k}(:)]];
+end
 end

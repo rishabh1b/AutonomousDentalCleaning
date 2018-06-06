@@ -1,10 +1,12 @@
 % This script depends on RealTeethGetGumlinePoints.m.
 % The script will take the cropped image (as obtained after homography) and
-% give upper teeth points(only upper) in ascending order for now
+% give points(only upper) on gumline of the teeth
+
+% This version for top-down view on the teeth
 
 % Thresholds for upper and lower lines using hough lines
-upper_hough_row = 35;
-lower_hough_row = 60;
+upper_hough_row = 45;
+lower_hough_row = 140;
 
 % Threshold for continuation points on the tooth profile
 % Distance in terms of rows between two consecutive points.
@@ -15,7 +17,7 @@ fill_gap_hough = 8;
 
 % Small White noise after image cleaning
 area_thresh = 50;
-resolution = 5;
+resolution = 10;
 B = imsharpen(imcropped);
 C = B;
 figure, imshow(C), title('Original Cropped Image')
@@ -60,8 +62,8 @@ M_roi_holes_filled = imfill(M_roi,'holes');
 
 seD = strel('disk',1);
 BWfinal = M_roi_holes_filled;
-%BWfinal = imerode(M_roi_holes_filled,seD);
-%BWfinal = imerode(BWfinal,seD);
+BWfinal = imerode(M_roi_holes_filled,seD);
+BWfinal = imerode(BWfinal,seD);
 BWfinal = bwareaopen(BWfinal,300);
 figure
 imshow(BWfinal)
@@ -280,6 +282,7 @@ for k = 1:sz_1
     cleaned_rows = rows(1);
     cleaned_cols = cols(1);
     last_added_row_elem = rows(1);
+    last_added_col_elem = cols(1);
     [~, ind] = min(rows);
     for j = 1 : ind-1
         if abs(rows(j+1) - last_added_row_elem) > thresh_conti

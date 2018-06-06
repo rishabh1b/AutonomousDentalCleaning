@@ -1,0 +1,105 @@
+The time for cleaning for Image 46 is 2.413175 min 
+PlaqueDetect
+ Chosen yes
+The time for cleaning for Image 46 is 2.413175 min 
+ Chosen yes
+The time for cleaning for Image 47 is 4.234286 min 
+ Chosen yes
+The time for cleaning for Image 48 is 5.459206 min 
+ Chosen yes
+ The time for cleaning for Image 49 is 3.760000 min 
+ Chosen yes
+The time for cleaning for Image 50 is 1.825873 min 
+PlaqueDetect
+ Chosen yes
+The time for cleaning for Image 51 is 1.895397 min 
+ Chosen yes
+The time for cleaning for Image 52 is 5.772381 min 
+ Chosen yes
+The time for cleaning for Image 53 is 5.348413 min 
+ Chosen yes
+The time for cleaning for Image 54 is 4.312540 min 
+ Chosen yes
+The time for cleaning for Image 55 is 4.144286 min 
+ Chosen yes
+The time for cleaning for Image 56 is 4.836667 min 
+ Chosen yes
+The time for cleaning for Image 57 is 3.527778 min 
+ Chosen yes
+The time for cleaning for Image 58 is 3.671905 min 
+ Chosen yes
+The time for cleaning for Image 59 is 0.914603 min 
+ Chosen yes
+The time for cleaning for Image 60 is 1.653016 min 
+PlaqueDetect
+ Chosen yes
+The time for cleaning for Image 61 is 1.338571 min 
+ Chosen yes
+The time for cleaning for Image 62 is 3.486825 min 
+ Chosen yes
+The time for cleaning for Image 63 is 2.930476 min 
+ Chosen yes
+The time for cleaning for Image 64 is 3.883175 min 
+ Chosen yes
+The time for cleaning for Image 65 is 2.466825 min 
+ Chosen yes
+The time for cleaning for Image 66 is 3.369048 min 
+ Chosen yes
+The time for cleaning for Image 67 is 3.503333 min 
+ Chosen yes
+The time for cleaning for Image 68 is 1.290317 min 
+ Chosen yes
+The time for cleaning for Image 69 is 3.209365 min 
+ Chosen yes
+The time for cleaning for Image 70 is 3.258571 min 
+PlaqueDetect
+ Chosen yes
+The time for cleaning for Image 71 is 1.848413 min 
+ Chosen yes
+The time for cleaning for Image 72 is 2.228571 min 
+ Chosen yes
+The time for cleaning for Image 73 is 3.173651 min 
+ Chosen yes
+The time for cleaning for Image 74 is 5.510000 min 
+ Chosen yes
+The time for cleaning for Image 75 is 4.113492 min 
+ Chosen yes
+The time for cleaning for Image 76 is 3.409841 min 
+ Chosen yes
+The time for cleaning for Image 77 is 4.846508 min 
+ Chosen yes
+The time for cleaning for Image 78 is 2.830159 min 
+ Chosen yes
+The time for cleaning for Image 79 is 1.480476 min 
+ Chosen yes
+The time for cleaning for Image 80 is 4.104603 min 
+ Chosen yes
+The time for cleaning for Image 81 is 6.359365 min 
+ Chosen yes
+The time for cleaning for Image 82 is 7.744127 min 
+ Chosen yes
+The time for cleaning for Image 83 is 3.160317 min 
+ Chosen yes
+The time for cleaning for Image 84 is 0.917619 min 
+ Chosen yes
+The time for cleaning for Image 85 is 5.220476 min 
+ Chosen yes
+The time for cleaning for Image 86 is 1.650952 min 
+ Chosen yes
+The time for cleaning for Image 87 is 2.856349 min 
+ Chosen yes
+The time for cleaning for Image 88 is 2.923333 min 
+ Chosen yes
+The time for cleaning for Image 89 is 1.601905 min 
+ Chosen yes
+The time for cleaning for Image 90 is 3.819206 min 
+PlaqueDetect
+ Chosen yes
+The time for cleaning for Image 82 is 7.744127 min 
+PlaqueDetect
+ Chosen yes
+The time for cleaning for Image 48 is 5.459206 min 
+close all
+PlaqueDetect
+ Chosen yes
+The time for cleaning for Image 48 is 5.459206 min 
